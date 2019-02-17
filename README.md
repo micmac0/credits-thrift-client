@@ -1,5 +1,5 @@
 # credits-thrift-client
-dependencies to create new java clients to credtis nodes
+dependencies to create new java clients to credits nodes
 
 ## install
 `./gradlew publishToMavenLocal`
