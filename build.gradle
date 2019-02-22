@@ -1,14 +1,24 @@
+import org.ajoberstar.grgit.Grgit
+
+buildscript {
+	repositories {
+		mavenCentral()
+		maven { url "https://plugins.gradle.org/m2/" }
+	}
+	dependencies {
+		classpath 'org.ajoberstar:grgit:2.2.0'
+		classpath "gradle.plugin.org.jruyi.gradle:thrift-gradle-plugin:0.4.0"
+	}
+}
+
+apply plugin: 'java-library'
+apply plugin: "wrapper"
 apply plugin: 'maven'
 apply plugin: 'java'
 apply plugin: 'maven-publish'
 apply plugin: "eclipse-wtp"
 apply plugin: 'idea'
-
-buildscript {
-	repositories {
-		mavenCentral()
-	}
-}
+apply plugin: "org.jruyi.thrift"
 
 group = 'org.micmac.credits'
 
@@ -20,23 +30,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 
-defaultTasks 'clean', 'jar'
-
-
-
-jar {
-	baseName "credits-thrift-client"
-    manifest {
-        attributes 'Implementation-Title': 'custom credits java client',
-                'Implementation-Version': version
-    }
-}
-
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-jar.finalizedBy sourcesJar
+defaultTasks 'clean', 'compileThrift', 'jar'
 
 repositories {
 	jcenter()
@@ -55,6 +49,41 @@ dependencies {
 	compile group: 'commons-pool', name: 'commons-pool', version: '1.6'
 	compile group: 'org.eclipse.jdt', name: 'org.eclipse.jdt.core', version: '3.13.100'
 }
+
+compileThrift {
+	File f = new File('../CS-API')
+	if (!f.exists()) {
+		logger.lifecycle "../CS-API repo does not exist : clone it..."
+		def grgit = Grgit.clone(dir: '../CS-API', uri: 'https://github.com/CREDITSCOM/CS-API.git')
+		grgit.close()
+	} else {
+		def grgit = Grgit.open(dir: '../CS-API')
+		grgit.close()
+		logger.lifecycle "CS-API repo already existing"
+	}
+	sourceDir '../CS-API'
+	generator 'java'
+	createGenFolder false
+	verbose true
+}
+
+sourceSets {
+	main.java.srcDirs += "${buildDir}/generated-sources/thrift"
+}
+
+jar {
+	baseName "credits-thrift-client"
+    manifest {
+        attributes 'Implementation-Title': 'custom credits java client',
+                'Implementation-Version': version
+    }
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+jar.finalizedBy sourcesJar
 
 publishing {
     publications {
