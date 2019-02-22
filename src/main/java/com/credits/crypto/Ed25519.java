@@ -16,7 +16,6 @@ import com.credits.common.utils.Converter;
 import com.credits.common.utils.Utils;
 import com.credits.crypto.exception.CreditsCryptoException;
 import com.credits.leveldb.client.exception.LevelDbClientException;
-import com.credits.leveldb.client.util.LevelDbClientConverter;
 
 import net.i2p.crypto.eddsa.EdDSAEngine;
 import net.i2p.crypto.eddsa.EdDSAPrivateKey;
@@ -85,12 +84,12 @@ public class Ed25519 {
 	public static String generateSignOfTransaction(String innerId, String source, String target, BigDecimal amount,
 			BigDecimal balance, byte currency, PrivateKey privateKey) throws LevelDbClientException {
 
-		Amount amountValue = LevelDbClientConverter.bigDecimalToAmount(amount);
+		Amount amountValue = Converter.bigDecimalToAmount(amount);
 
 		Integer amountIntegral = amountValue.getIntegral();
 		Long amountFraction = amountValue.getFraction();
 
-		Amount balanceValue = LevelDbClientConverter.bigDecimalToAmount(balance);
+		Amount balanceValue = Converter.bigDecimalToAmount(balance);
 
 		Integer balanceIntegral = balanceValue.getIntegral();
 		Long balanceFraction = balanceValue.getFraction();

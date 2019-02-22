@@ -10,7 +10,6 @@ import java.nio.ByteOrder;
 import com.credits.client.node.thrift.generated.Amount;
 import com.credits.common.exception.CreditsCommonException;
 import com.credits.leveldb.client.exception.LevelDbClientException;
-import com.credits.leveldb.client.util.LevelDbClientConverter;
 
 public class TransactionStruct implements Serializable {
 	private long id;
@@ -33,7 +32,7 @@ public class TransactionStruct implements Serializable {
 		this.source = Converter.decodeFromBASE58(source);
 		this.target = Converter.decodeFromBASE58(target);
 
-		Amount aAmount = LevelDbClientConverter.bigDecimalToAmount(amount);
+		Amount aAmount = Converter.bigDecimalToAmount(amount);
 		this.amountInt = aAmount.integral;
 		this.amountFrac = aAmount.fraction;
 
