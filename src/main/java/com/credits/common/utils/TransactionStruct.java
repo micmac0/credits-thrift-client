@@ -11,6 +11,10 @@ import com.credits.client.node.thrift.generated.Amount;
 import com.credits.common.exception.CreditsCommonException;
 import com.credits.leveldb.client.exception.LevelDbClientException;
 
+/**
+ * 
+ * Used to sign transactions.
+ */
 public class TransactionStruct implements Serializable {
 	private long id;
 	private byte[] source;
